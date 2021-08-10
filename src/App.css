@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+}
+.card {
+  background-color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  box-sizing: 0 0 10px 0;
+  border: 1px solid #cecece;
+}
+.main_graph {
+  width: 600px;
+  height: 600px;
+  margin: 50px auto;
+}
+.card__div {
+  display: flex;
+  justify-content: center;
+}
+.span__color {
+  color: red;
+}
