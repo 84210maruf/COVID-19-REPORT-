@@ -11,14 +11,7 @@ function App() {
   const [totalDeaths, setTotalDeaths] = useState(0);
   const [loading, setLoading] = useState(false);
   const [days, setDays] = useState(30);
-  const [country, setCountry] = useState("BD");
-
-  console.log(
-    "\n totalConfirmed :",
-    totalConfirmed + "\n recovered :",
-    totalRecovered + "\n Deaths :",
-    totalDeaths
-  );
+  const [country, setCountry] = useState('');
 
   // componantDidMount
   useEffect(() => {
@@ -28,7 +21,7 @@ function App() {
       .get("https://api.covid19api.com/summary")
       .then((res) => {
         setLoading(false);
-        console.log(res);
+        console.log('Summery :',res);
 
         setTotalConfirmed(res.data.Global.TotalConfirmed);
         setTotalRecovered(res.data.Global.TotalRecovered);
@@ -42,11 +35,12 @@ function App() {
 
   const getCountryReportByDateRang = (countrySlug, from, to) => {
     axios
-      .get(
-        'https://api.covid19api.com/country/${countrySlug}/status/confirmed?from=${from}T00:00:00Z&to=${to}T00:00:00Z'
-      )
+    // +countrySlug+ == ${countrySlug}
+    // as same as 'https://api.covid19api.com/country/'+countrySlug+'/status/confirmed?from=${from}T00:00:00Z&to=${to}T00:00:00Z'
+      .get('https://api.covid19api.com/country/'+countrySlug+'/status/confirmed?from='+from+'T00:00:00Z&to='+to+'T00:00:00Z')
       .then((res) => {
         console.log("ByCountry", res);
+        
       })
       .catch((err) => {
         console.log(err);
@@ -64,14 +58,14 @@ function App() {
 
   
   const countryHandeler = (e) => {
-    console.log(e);
     setCountry(e.target.value);
     const d = new Date();
     const to = formatDate(d);
     const from = formatDate(d.setDate(d.getDate() - 7));
-    console.log('DATE :',from,to);
+    
+    console.log('country : ',country + ' DATE :',from,to);
 
-    getCountryReportByDateRang(e.target.value, from, to);
+    getCountryReportByDateRang(country, from, to);
   };
   const dayHandler = (e) => {
     setDays(e.target.value);
@@ -87,7 +81,7 @@ function App() {
         totalConfirmed={totalConfirmed}
         totalRecovered={totalRecovered}
         totalDeaths={totalDeaths}
-        country={""}
+        country={country}
       />
 
       <div>

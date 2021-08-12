@@ -14,7 +14,7 @@ function CovidSummery(props) {
         <div>
         <div>
           <h1>COVID-19 <span className='span__color'>REPORT</span></h1>
-          <h3>{country==='' ? 'World wide report' : country}</h3>
+          <h3>{country==="" ? 'World wide report' : country}</h3>
 
           <div className="card__div">
           <Card>
