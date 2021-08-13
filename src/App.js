@@ -12,6 +12,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [days, setDays] = useState(30);
   const [country, setCountry] = useState('');
+  const [coronaCountArr, setCoronaCountArr] = useState([]);
+  const [coronaDateArr, setCoronaDateArr] = useState([]);
 
   // componantDidMount
   useEffect(() => {
@@ -35,11 +37,21 @@ function App() {
 
   const getCountryReportByDateRang = (countrySlug, from, to) => {
     axios
-    // +countrySlug+ == ${countrySlug}
-    // as same as 'https://api.covid19api.com/country/'+countrySlug+'/status/confirmed?from=${from}T00:00:00Z&to=${to}T00:00:00Z'
-      .get('https://api.covid19api.com/country/'+countrySlug+'/status/confirmed?from='+from+'T00:00:00Z&to='+to+'T00:00:00Z')
+    // '+countrySlug+' == `${countrySlug}`
+    // as same as 'https://api.covid19api.com/country/'+ countrySlug +'/status/confirmed?from='+ from +'T00:00:00Z&to='+ to +'T00:00:00Z'
+      .get(`https://api.covid19api.com/country/${countrySlug}/status/confirmed?from=${from}T00:00:00Z&to=${to}T00:00:00Z`)
       .then((res) => {
         console.log("ByCountry", res);
+
+        const yAxisCoronaCount = res.data.map(d => d.Cases);
+        const xAxisDateCount = res.data.map(d => d.Date);
+        setCoronaCountArr(yAxisCoronaCount);
+        setCoronaDateArr(xAxisDateCount);
+
+        const covidCountryDetails = covidSummary.Countries.find(country => country.Slug === countrySlug);
+        setTotalConfirmed(covidCountryDetails.TotalConfirmed);
+        setTotalDeaths(covidCountryDetails.TotalDeaths);
+        setTotalRecovered(covidCountryDetails.TotalRecovered);
         
       })
       .catch((err) => {
@@ -61,7 +73,8 @@ function App() {
     setCountry(e.target.value);
     const d = new Date();
     const to = formatDate(d);
-    const from = formatDate(d.setDate(d.getDate() - 7));
+    console.log('DAYS ARE :',days);
+    const from = formatDate(d.setDate(d.getDate() - days));
     
     console.log('country : ',country + ' DATE :',from,to);
 
@@ -69,6 +82,12 @@ function App() {
   };
   const dayHandler = (e) => {
     setDays(e.target.value);
+
+    const d = new Date();
+    const to = formatDate(d);
+    const from = formatDate(d.setDate(d.getDate() - e.target.value));
+
+    getCountryReportByDateRang(country, from, to);
   };
 
   if (loading) {
@@ -86,6 +105,7 @@ function App() {
 
       <div>
         <select value={country} onChange={countryHandeler}>
+          <option value="">Select Country</option>
           {covidSummary.Countries &&
             covidSummary.Countries.map((country) => (
               <option key={country.Slug} value={country.Slug}>
@@ -100,7 +120,8 @@ function App() {
         </select>
       </div>
 
-      <LineGraph />
+      <LineGraph yAxis={coronaCountArr} xAxis={coronaDateArr} />
+      
     </div>
   );
 }

@@ -9,7 +9,7 @@
   border: 1px solid #cecece;
 }
 .main_graph {
-  width: 600px;
+  width: 650px;
   height: 600px;
   margin: 50px auto;
 }
@@ -20,4 +20,3 @@
 .span__color {
   color: red;
 }
-
